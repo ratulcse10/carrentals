@@ -37,7 +37,51 @@ class RepController extends \BaseController {
 	 */
 	public function store()
 	{
-		//
+		$rules = [
+					'name'      => 'required',
+					'address'   => 'required',
+					'email'     => 'required|email|unique:users',
+					'password'  => 'required',
+					'city'      => 'required',
+					'state'     => 'required',
+					'zip'       => 'required',
+					'phone' => 'required'
+
+		];
+
+		$data = Input::all();
+
+		$validator = Validator::make($data,$rules);
+
+		if($validator->fails()){
+			return Redirect::back()->withInput()->withErrors($validator);
+		}
+
+		$user = new User();
+
+		$user->email = $data['email'];
+		$user->password = Hash::make($data['password']);
+
+		if($user->save()){
+			$rep = new Rep();
+			$rep->user_id = $user->id;
+			$rep->name = $data['name'];
+			$rep->address = $data['address'];
+			$rep->city = $data['city'];
+			$rep->state = $data['state'];
+			$rep->zip = $data['zip'];
+			$rep->phone = $data['phone'];
+
+
+			if($rep->save()){
+				return Redirect::route('rep.index')->with('success',"VIP Rep Created Successfully");
+			}else{
+				return Redirect::route('rep.index')->with('error',"Something went wrong.Try again");
+			}
+
+		}else{
+			return Redirect::route('rep.index')->with('error',"Something went wrong.Try again");
+		}
 	}
 
 	/**
