@@ -11,9 +11,9 @@ class RepController extends \BaseController {
 	public function index()
 	{
 
-		//return Rep::with('user')->get();
+		//return Rep::all();
 		return View::make('reps.index')
-					->with('reps',Rep::with('user')->get())
+					->with('reps',Rep::all())
 					->with('title',"VIP Reps");
 	}
 
@@ -105,7 +105,15 @@ class RepController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		//
+		try{
+			$rep = Rep::findOrFail($id);
+			return View::make('reps.edit')
+						->with('rep',$rep)
+						->with('title','Edit VIP Rep');
+		}catch (Exception $ex){
+			return Redirect::route('rep.index')->with('error',"Something went wrong.Try again");
+		}
+
 	}
 
 	/**
@@ -117,7 +125,37 @@ class RepController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		$rules = [
+
+					'name'      => 'required',
+					'address'   => 'required',
+					'city'      => 'required',
+					'state'     => 'required',
+					'zip'       => 'required',
+					'phone' => 'required'
+		];
+
+		$data = Input::all();
+
+		$validator = Validator::make($data,$rules);
+
+		if($validator->fails()){
+			return Redirect::back()->withInput()->withErrors($validator);
+		}
+
+		$rep = Rep::find($id);
+		$rep->name = $data['name'];
+		$rep->address = $data['address'];
+		$rep->city = $data['city'];
+		$rep->state = $data['state'];
+		$rep->zip = $data['zip'];
+		$rep->phone = $data['phone'];
+
+		if($rep->save()){
+			return Redirect::route('rep.index')->with('success',"VIP Rep Updated Successfully");
+		}else{
+			return Redirect::route('rep.index')->with('error',"Something went wrong.Try again");
+		}
 	}
 
 	/**
@@ -129,7 +167,12 @@ class RepController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		$rep = Rep::find($id);
+		if(User::destroy($rep->user_id)){
+			return Redirect::route('rep.index')->with('success',"VIP Rep deleted Successfully.");
+		}else{
+			return Redirect::route('rep.index')->with('error',"Something went wrong.Try again");
+		}
 	}
 
 }

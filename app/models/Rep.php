@@ -3,6 +3,7 @@
 class Rep extends \Eloquent {
 	protected $guarded = ['id'];
 	protected $table = 'reps';
+	protected $with = ['user'];
 
 	public function user()
 	{
