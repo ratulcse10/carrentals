@@ -20,3 +20,14 @@ Route::group(array('before' => 'auth'), function()
 
 
 });
+
+Route::group(array('before' => 'auth|Admin'), function()
+{
+
+	Route::get('reps',['as' => 'rep.index', 'uses' => 'RepController@index']);
+	Route::get('rep/create',['as' => 'rep.create', 'uses' => 'RepController@create']);
+	Route::post('rep/create',['as' => 'rep.store', 'uses' => 'RepController@store']);
+	Route::get('rep/{id}/edit',['as' => 'rep.edit', 'uses' => 'RepController@edit']);
+	Route::put('rep/{id}',['as' => 'rep.update', 'uses' => 'RepController@update']);
+	Route::delete('reps/{id}',['as' => 'rep.delete', 'uses' => 'RepController@destroy']);
+});
