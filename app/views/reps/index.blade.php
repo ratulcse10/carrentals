@@ -2,6 +2,9 @@
 
 @section('content')
     <div class="row">
+	<style>
+
+	</style>
         <div class="col-lg-12">
             @include('includes.alert')
             <section class="panel">
@@ -85,18 +88,20 @@
 
 @section('style')
     {{ HTML::style('assets/data-tables/DT_bootstrap.css') }}
+
 @stop
 
 
 @section('script')
-    {{ HTML::script('assets/advanced-datatable/media/js/jquery.dataTables.js') }}
+    {{ HTML::script('assets/data-tables/jquery.dataTables.js') }}
     {{ HTML::script('assets/data-tables/DT_bootstrap.js') }}
+    
 
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function() {
-            $('#example').dataTable({
+             $('#example').dataTable( {
 
-            });
+    	     } );
 
             // delete
             $('.deleteBtn').click(function() {
